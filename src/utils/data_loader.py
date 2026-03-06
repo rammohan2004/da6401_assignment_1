@@ -30,8 +30,4 @@ def load_and_preprocess_data(dataset_name='mnist'):
     
     X_train_flat = X_train_flat/255.0
     X_test_flat = X_test_flat/255.0
-  
-    
-   
-    
     return X_train_flat,X_test_flat, y_train_raw, y_test_raw

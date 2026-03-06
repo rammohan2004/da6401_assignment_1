@@ -201,7 +201,7 @@ class NeuralNetwork:
         N = y_true.shape[0]
          # Backprop through layers in reverse; collect grads so that index 0 = last layer
         y_pred = self.activations[-1].forward(logits)
-        grad = (y_pred - y_true)
+        grad = (y_pred - y_true)/N
         grad = self.layers[-1].backward(grad)
         
         grad_W_list.append(self.layers[-1].grad_W)
