@@ -28,6 +28,8 @@ def load_and_preprocess_data(dataset_name='mnist'):
     X_train_flat =X_train_raw.reshape(X_train_raw.shape[0], -1)
     X_test_flat =X_test_raw.reshape(X_test_raw.shape[0], -1)
     
+    X_train_flat = X_train_flat/255.0
+    X_test_flat = X_test_flat/255.0
   
     
    

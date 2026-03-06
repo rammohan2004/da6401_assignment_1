@@ -95,7 +95,6 @@ def evaluate_model(model, X_test, y_test):
       #Noemalizing to make values between 0.0 and 1.0
 
     print("Infernec : evaluate_model ")
-    X_test = X_test/255.0
 
     #Doing one hot encoding for outputs
     y_test = np.eye(10)[y_test]

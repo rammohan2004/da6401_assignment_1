@@ -239,7 +239,6 @@ class NeuralNetwork:
         Train the network for specified epochs.
         """
         #Normalizing to make values between 0.0 and 1.0
-        X_train= X_train/255.0
 
         #Doing one hot encoding for outputs
         y_train = np.eye(10)[y_train]
