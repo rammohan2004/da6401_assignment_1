@@ -101,8 +101,14 @@ def main():
     best_weights = model.best_weights
     
     #model_path = os.path.join(save_path, 'best_model.npy')
-    np.save('best_model.npy', best_weights)
+    if model.best_weights is not None:
+        np.save(args.model_save_path, model.best_weights)
+
+        with open("best_config.json", "w") as f:
+            json.dump(vars(args), f, indent=4)
+        print("Best model and configuration saved successfully!")
     print(f"Model weights saved")
+    
 
     '''
     #Saving the model

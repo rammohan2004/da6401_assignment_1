@@ -1,4 +1,4 @@
-venv/
+ass1/
 __pycache__/
 wandb/
 .DS_Store

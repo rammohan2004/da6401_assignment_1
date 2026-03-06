@@ -144,8 +144,8 @@ def main():
     model = NeuralNetwork(args)
     
     # Loading weights
-    print(f"Loading weights from {args.model_path}...")
-    weights_dict = load_model(args.model_path)
+    print(f"Loading weights from {args.model_save_path}...")
+    weights_dict = load_model(args.model_save_path)
     
     # Putting weights into network using OOP method
     model.set_weights(weights_dict)
