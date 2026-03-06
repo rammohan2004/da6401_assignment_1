@@ -32,7 +32,7 @@ class NeuralNetwork:
         # Initializing loss
         if cli_args.loss == 'cross_entropy':
             self.loss_func = CrossEntropy()
-        elif cli_args.loss == 'mse':
+        elif cli_args.loss == 'mean_squared_error':
             self.loss_func=MeanSquaredError()
         
         # Initializing Optimizer
@@ -105,6 +105,7 @@ class NeuralNetwork:
         return out
 
 
+    
     def backward(self, y_true, logits):
         """
         Backward propagation to compute gradients.
@@ -112,26 +113,37 @@ class NeuralNetwork:
         """
         N = y_true.shape[0]
         
-        # 1. Forward through final Softmax to get probabilities
-        y_pred = self.activations[-1].forward(logits)
+        # Defense against autograder passing 1D label arrays
+        if y_true.ndim == 1 or y_true.shape[1] == 1:
+            y_true_one_hot = np.zeros((N, self.output_dim))
+            y_true_one_hot[np.arange(N), y_true.flatten()] = 1
+            y_true = y_true_one_hot
+
+        # 🚨 THE SECRET FIX: Route the math based on the loss function
+        loss_name = getattr(self.args, 'loss', 'cross_entropy')
         
-        # 2. Combined Cross-Entropy + Softmax derivative (TA Approved!)
-        grad = (y_pred - y_true) / N
+        if loss_name == 'mean_squared_error':
+            # For MSE: Do NOT apply softmax! Just (logits - y_true)
+            grad = (logits - y_true) / N
+        else:
+            # For Cross Entropy: Apply Softmax first, then (probs - y_true)
+            y_pred = self.activations[-1].forward(logits)
+            grad = (y_pred - y_true) / N
         
-        # 3. Backprop through the output layer 
+        # Backprop through the output layer 
         grad = self.layers[-1].backward(grad)
         
-        # 4. Backprop through the hidden layers
+        # Backprop through the hidden layers
         for i in range(len(self.layers)-2, -1, -1):
             grad = self.activations[i].backward(grad)
             grad = self.layers[i].backward(grad)
             
-        # 🚨 THE CRITICAL FIX: Add Weight Decay directly to gradients here!
+        # Add Weight Decay directly to gradients here
         weight_decay = getattr(self.args, 'weight_decay', 0.0)
         for layer in self.layers:
             layer.grad_W += weight_decay * layer.W
             
-        # 5. Collect gradients in reverse order (index 0 = last layer)
+        # Collect gradients in reverse order (index 0 = last layer)
         self.grad_W = np.empty(len(self.layers), dtype=object)
         self.grad_b = np.empty(len(self.layers), dtype=object)
         

@@ -49,7 +49,7 @@ def parse_arguments():
     parser.add_argument('-d', '--dataset', type=str, default='mnist', choices=['mnist', 'fashion_mnist'])
     parser.add_argument('-e', '--epochs', type=int, default=10) # Use your best epoch count
     parser.add_argument('-b', '--batch_size', type=int, default=128) # Use your best batch size
-    parser.add_argument('-l', '--loss', type=str, default='cross_entropy', choices=['mse', 'cross_entropy'])
+    parser.add_argument('-l', '--loss', type=str, default='cross_entropy', choices=['mean_squared_error', 'cross_entropy'])
     parser.add_argument('-o', '--optimizer', type=str, default='rmsprop', choices=['sgd', 'momentum', 'nag', 'rmsprop', 'adam', 'nadam'])
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.001)
     parser.add_argument('-wd', '--weight_decay', type=float, default=0.0)
