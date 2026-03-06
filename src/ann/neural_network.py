@@ -103,7 +103,45 @@ class NeuralNetwork:
              z = self.activations[i].forward(z)
             out = z
         return out
+
+
+    def backward(self, y_true, logits):
+        """
+        Backward propagation to compute gradients.
+        Returns gradients from the last layer to the first.
+        """
+        N = y_true.shape[0]
+        
+        # 1. Forward through final Softmax to get probabilities
+        y_pred = self.activations[-1].forward(logits)
+        
+        # 2. Combined Cross-Entropy + Softmax derivative (TA Approved!)
+        grad = (y_pred - y_true) / N
+        
+        # 3. Backprop through the output layer 
+        grad = self.layers[-1].backward(grad)
+        
+        # 4. Backprop through the hidden layers
+        for i in range(len(self.layers)-2, -1, -1):
+            grad = self.activations[i].backward(grad)
+            grad = self.layers[i].backward(grad)
+            
+        # 🚨 THE CRITICAL FIX: Add Weight Decay directly to gradients here!
+        weight_decay = getattr(self.args, 'weight_decay', 0.0)
+        for layer in self.layers:
+            layer.grad_W += weight_decay * layer.W
+            
+        # 5. Collect gradients in reverse order (index 0 = last layer)
+        self.grad_W = np.empty(len(self.layers), dtype=object)
+        self.grad_b = np.empty(len(self.layers), dtype=object)
+        
+        for i, layer in enumerate(reversed(self.layers)):
+            self.grad_W[i] = layer.grad_W
+            self.grad_b[i] = layer.grad_b
+            
+        return self.grad_W, self.grad_b
     
+    ''' 
     def backward(self, y_true, logits):
         """
         Backward propagation to compute gradients.
@@ -153,7 +191,7 @@ class NeuralNetwork:
         return self.grad_W, self.grad_b
 
         
-        
+        '''
     
     def update_weights(self):
         """
@@ -271,7 +309,6 @@ class NeuralNetwork:
         Evaluate the network on given data.
         """
         #Normalizing to make values between 0.0 and 1.0
-        X= X/255.0
 
         #Doing one hot encoding for outputs
         y = np.eye(10)[y]

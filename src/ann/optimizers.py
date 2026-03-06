@@ -12,7 +12,7 @@ class SGD:
     def update(self, layers):
         for layer in layers:
             # Adding weight decay
-            layer.grad_W = layer.grad_W + self.weight_decay * layer.W
+            #layer.grad_W = layer.grad_W + self.weight_decay * layer.W
 
             # updating weights and biases
             layer.W = layer.W - self.learning_rate * layer.grad_W
@@ -32,7 +32,7 @@ class Momentum:
                 self.velocities[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
             # Adding weight decay 
-            layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
+            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
             
             # Getting old velocities
             v_w_old = self.velocities[i][0]
@@ -64,7 +64,7 @@ class NAG:
                 self.velocities[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
             # Adding weight decay 
-            layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
+            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
             
             # Getting old velocities
             v_w_old = self.velocities[i][0]
@@ -97,7 +97,7 @@ class RMSprop:
                 self.S[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
             # Adding weight decay 
-            layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
+            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
             
             # Getting old values
             S_w_old = self.S[i][0]
