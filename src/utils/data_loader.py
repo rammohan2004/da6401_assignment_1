@@ -18,7 +18,7 @@ def load_and_preprocess_data(dataset_name='mnist'):
     Returns:
         X_train_norm,X_test_norm, y_train_encoded, y_test_encoded
     """
-    #Load raw data
+    #Loading raw data
     if dataset_name == 'mnist':
         (X_train_raw, y_train_raw), (X_test_raw, y_test_raw) = mnist.load_data()
     elif dataset_name == 'fashion_mnist':
@@ -28,6 +28,7 @@ def load_and_preprocess_data(dataset_name='mnist'):
     X_train_flat =X_train_raw.reshape(X_train_raw.shape[0], -1)
     X_test_flat =X_test_raw.reshape(X_test_raw.shape[0], -1)
     
+    #Normalizing pixel values
     X_train_flat = X_train_flat/255.0
     X_test_flat = X_test_flat/255.0
     return X_train_flat,X_test_flat, y_train_raw, y_test_raw

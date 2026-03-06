@@ -29,8 +29,6 @@ def parse_arguments():
     - wandb_project: W&B project name
     - model_save_path: Path to save trained model (do not give absolute path, rather provide relative path)
     """
-
-    print("Train : parse_argument")
     
     parser = argparse.ArgumentParser(description='Train a neural network')
     parser.add_argument('-d', '--dataset', type=str, default='mnist', choices=['mnist', 'fashion_mnist'])
@@ -53,9 +51,6 @@ def parse_arguments():
         args.hidden_size = args.hidden_size * args.num_layers
     elif len(args.hidden_size) != args.num_layers:
         raise ValueError(f"--hidden_size must have exactly {args.num_layers} values when specified as a list.")
-    
-    print("Train parse arguments : ")
-    print(args)
     
     return args
 
@@ -84,63 +79,23 @@ def main():
     history = model.train(X_train, y_train, args.epochs, args.batch_size)
 
     
-
-    # Safely extract the save path, defaulting to 'src/'
-    '''  save_path = getattr(args, 'model_save_path', 'src/')
-    os.makedirs(save_path, exist_ok=True)
     
-    # Saving the configurations as json
-    config_path = os.path.join(save_path, 'best_config.json')
-    with open(config_path, 'w') as f:
-        json.dump(vars(args), f, indent=4)
-    print(f"Configuration saved to {config_path}")
-    '''
-    print("Train main : model saving : best weights")
-    
-    # Saving model weights
-    best_weights = model.best_weights
-    
-    #model_path = os.path.join(save_path, 'best_model.npy')
+    #saving best weights
     if model.best_weights is not None:
         np.save(args.model_save_path, model.best_weights)
 
         with open("best_config.json", "w") as f:
             json.dump(vars(args), f, indent=4)
-        print("Best model and configuration saved successfully!")
     print(f"Model weights saved")
     
 
-    '''
-    #Saving the model
-    os.makedirs(args.model_save_path, exist_ok=True)
     
-    #Saving the configurations as json
-    config_path = os.path.join(args.model_save_path, 'best_config.json')
-    with open(config_path, 'w') as f:
-        json.dump(vars(args), f, indent=4)
-    print(f"Configuration saved to {config_path}")
-    
-
-    #Saving model weights and biases as numpy .npy file
-
-    best_weights = model.best_weights
-    model_path = os.path.join(args.model_save_path, 'best_model.npy')
-    np.save(model_path, best_weights)
-    print(f"Model weights saved to {model_path}") '''
     
     #Finishing wandb
     if args.wandb_project is not None:
         wandb.finish()
     
     print("Training complete!") 
-
-    ''' weights_dict = {}
-    for i, layer in enumerate(model.layers):
-        weights_dict[f'W_{i}'] = layer.W
-        weights_dict[f'b_{i}'] = layer.b
-    model_path = os.path.join(args.model_save_path, 'model.npy')
-    np.save(model_path, weights_dict)
-    print(f"Model weights saved to {model_path}")'''
 
 
 if __name__ == '__main__':

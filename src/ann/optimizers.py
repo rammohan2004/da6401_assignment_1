@@ -11,10 +11,8 @@ class SGD:
 
     def update(self, layers):
         for layer in layers:
-            # Adding weight decay
-            #layer.grad_W = layer.grad_W + self.weight_decay * layer.W
 
-            # updating weights and biases
+            #updating weights and biases
             layer.W = layer.W - self.learning_rate * layer.grad_W
             layer.b = layer.b - self.learning_rate * layer.grad_b
 
@@ -27,26 +25,25 @@ class Momentum:
 
     def update(self, layers):
         for i, layer in enumerate(layers):
-            # Initial velocities are initialized to zero
+
+            #Initial velocities are initialized to zero
             if i not in self.velocities:
                 self.velocities[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
-            # Adding weight decay 
-            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
             
-            # Getting old velocities
+            #Getting old velocities
             v_w_old = self.velocities[i][0]
             v_b_old = self.velocities[i][1]
             
-            # Calculating the new velocities
+            #Calculating the new velocities
             v_w_new = self.momentum * v_w_old + layer.grad_W
             v_b_new = self.momentum * v_b_old + layer.grad_b
 
-            # Saving new velocities
+            #Saving new velocities
             self.velocities[i][0] = v_w_new
             self.velocities[i][1] = v_b_new
             
-            # Updating weights and biases
+            #Updating weights and biases
             layer.W = layer.W - self.learning_rate * v_w_new
             layer.b = layer.b - self.learning_rate * v_b_new
 
@@ -59,28 +56,26 @@ class NAG:
 
     def update(self, layers):
         for i, layer in enumerate(layers):
+
             # Initial velocities are initialized to zero
             if i not in self.velocities:
                 self.velocities[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
-            # Adding weight decay 
-            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
+            #Getting old velocities
+            v_w_old =self.velocities[i][0]
+            v_b_old= self.velocities[i][1]
             
-            # Getting old velocities
-            v_w_old = self.velocities[i][0]
-            v_b_old = self.velocities[i][1]
-            
-            # Calculating the new velocities
-            v_w_new = self.momentum * v_w_old + layer.grad_W
-            v_b_new = self.momentum * v_b_old + layer.grad_b
+            #Calculating the new velocities
+            v_w_new = self.momentum*v_w_old +layer.grad_W
+            v_b_new= self.momentum*v_b_old+ layer.grad_b
 
-            # Saving new velocities
+            #Saving new velocities
             self.velocities[i][0] = v_w_new
-            self.velocities[i][1] = v_b_new
+            self.velocities[i][1]= v_b_new
             
-            # Updating weights and biases (Nesterov look-ahead approximation)
-            layer.W = layer.W - self.learning_rate * (self.momentum * v_w_new + layer.grad_W)
-            layer.b = layer.b - self.learning_rate * (self.momentum * v_b_new + layer.grad_b)
+            #Updating weights and biases
+            layer.W = layer.W-self.learning_rate* (self.momentum * v_w_new + layer.grad_W)
+            layer.b = layer.b -self.learning_rate* (self.momentum * v_b_new + layer.grad_b)
 
 class RMSprop:
     def __init__(self, learning_rate=0.01, weight_decay=0.0):
@@ -92,25 +87,23 @@ class RMSprop:
     def update(self, layers):
         epsilon = 1e-8
         for i, layer in enumerate(layers):
-            # Initial S list values are initialized to zero
+            #Initial S list values are initialized to zero
             if i not in self.S:
                 self.S[i] = [np.zeros_like(layer.W), np.zeros_like(layer.b)]
             
-            # Adding weight decay 
-            #layer.grad_W = layer.grad_W + (self.weight_decay * layer.W)
             
-            # Getting old values
-            S_w_old = self.S[i][0]
-            S_b_old = self.S[i][1]
+            #Getting old values
+            S_w_old =self.S[i][0]
+            S_b_old =self.S[i][1]
             
-            # Calculating new values
-            S_w_new = self.beta * S_w_old + (1 - self.beta) * (layer.grad_W**2)
-            S_b_new = self.beta * S_b_old + (1 - self.beta) * (layer.grad_b**2)
+            #Calculating new values
+            S_w_new =self.beta * S_w_old +(1 - self.beta) * (layer.grad_W**2)
+            S_b_new = self.beta* S_b_old + (1 -self.beta) * (layer.grad_b**2)
 
-            # Saving new S values
+            #Saving new S values
             self.S[i][0] = S_w_new
-            self.S[i][1] = S_b_new
+            self.S[i][1]= S_b_new
 
-            # Updating old values
-            layer.W = layer.W - (self.learning_rate / (np.sqrt(S_w_new) + epsilon)) * layer.grad_W
-            layer.b = layer.b - (self.learning_rate / (np.sqrt(S_b_new) + epsilon)) * layer.grad_b
+            #Updating old values
+            layer.W =layer.W -(self.learning_rate /(np.sqrt(S_w_new)+ epsilon)) *layer.grad_W
+            layer.b =layer.b -(self.learning_rate /(np.sqrt(S_b_new)+ epsilon)) *layer.grad_b

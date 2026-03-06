@@ -8,6 +8,7 @@ import numpy as np
 
 class ReLU:
     def forward(self, x):
+        #ReLU(x) is max(0, x)
         self.a = np.maximum(0, x)
         return self.a
     def backward(self, grad_output):
@@ -18,6 +19,7 @@ class ReLU:
 class Sigmoid:
     
     def forward(self, x):
+        #Sigmoid(x) is (1/1+e^(-x))
         self.a = 1 / (1 + np.exp(-x))
         return self.a
     def backward(self, grad_output):
@@ -27,6 +29,7 @@ class Sigmoid:
     
 class Tanh:
     def forward(self, x):
+        #Used tanh function to calculate tanh
         self.a = np.tanh(x)
         return self.a
     def backward(self, grad_output):
@@ -36,6 +39,7 @@ class Tanh:
     
 class Softmax:
     def forward(self, x):
+        #Normalizing to get rid off Nan errors
         x_normal = x - np.max(x, axis=1, keepdims=True)
         exps = np.exp(x_normal)
         self.a = exps / np.sum(exps, axis=1, keepdims=True)

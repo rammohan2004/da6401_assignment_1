@@ -23,27 +23,6 @@ def parse_arguments():
     - num_neurons: Number of neurons in hidden layers
     - activation: Activation function ('relu', 'sigmoid', 'tanh')
     """
-    parser = argparse.ArgumentParser(description='Train a neural network')
-    '''parser.add_argument('-d', '--dataset', type=str, required=True,
-                        choices=['mnist', 'fashion_mnist'])
-    parser.add_argument('-e', '--epochs', type=int, required=True)
-    parser.add_argument('-b', '--batch_size', type=int, required=True)
-    parser.add_argument('-l', '--loss', type=str, required=True,
-                        choices=['mse', 'cross_entropy'])
-    parser.add_argument('-o', '--optimizer', type=str, required=True,
-                        choices=['sgd', 'momentum', 'nag', 'rmsprop', 'adam', 'nadam'])
-    parser.add_argument('-lr', '--learning_rate', type=float, required=True)
-    parser.add_argument('-wd', '--weight_decay', type=float, required=True)
-    parser.add_argument('-nhl', '--num_layers', type=int, required=True)
-    parser.add_argument('-sz', '--hidden_size', type=int, nargs='+', required=True)
-    parser.add_argument('-a', '--activation', type=str, required=True,
-                        choices=['sigmoid', 'tanh', 'relu'])
-    parser.add_argument('-w_i', '--weight_init', type=str, required=True,
-                        choices=['random', 'xavier'])
-    parser.add_argument('-w_p','--wandb_project', type=str, default=None)
-    parser.add_argument('--model_path', type=str, default='models/')'''
-
-    print("Inside inference parse arguments")
 
     parser = argparse.ArgumentParser(description='Train a neural network')
     parser.add_argument('-d', '--dataset', type=str, default='mnist', choices=['mnist', 'fashion_mnist'])
@@ -62,9 +41,7 @@ def parse_arguments():
     
     args = parser.parse_args()
 
-    print("Inside infernce parse arguments : args")
-    print(args)
-    
+
     if len(args.hidden_size) == 1:
         args.hidden_size = args.hidden_size * args.num_layers
     elif len(args.hidden_size) != args.num_layers:
@@ -77,10 +54,8 @@ def load_model(model_path):
     """
     Load trained model from disk.
     """
-    print("Infernce : load_model ", model_path)
         
     weights_dict = np.load(model_path, allow_pickle=True).item()
-    print("Infernce : load_model, weight dict ",weights_dict)
     return weights_dict
 
 
@@ -92,21 +67,23 @@ def evaluate_model(model, X_test, y_test):
         
     TODO: Return Dictionary - logits, loss, accuracy, f1, precision, recall
     """
-      #Noemalizing to make values between 0.0 and 1.0
-
-    print("Infernec : evaluate_model ")
 
     #Doing one hot encoding for outputs
     y_test = np.eye(10)[y_test]
 
+    #Forward pass
     y_pred = model.forward(X_test)
+
+    #applying softmax activation
     y_pred = model.activations[-1].forward(y_pred)
     
-    loss = model.loss_func.forward(y_test, y_pred)
+    #Calculating loss
+    loss =model.loss_func.forward(y_test, y_pred)
     
-    y_true_class = np.argmax(y_test, axis=1)
-    y_pred_class = np.argmax(y_pred, axis=1)
+    y_true_class =np.argmax(y_test, axis=1)
+    y_pred_class =np.argmax(y_pred, axis=1)
     
+    #calculating acuracy precision recall f1 score
     accuracy = accuracy_score(y_true_class, y_pred_class)
     precision = precision_score(y_true_class, y_pred_class, average='macro', zero_division=0)
     recall = recall_score(y_true_class, y_pred_class, average='macro', zero_division=0)
@@ -120,8 +97,6 @@ def evaluate_model(model, X_test, y_test):
         'recall': recall,
         'f1': f1
     }
-    print("Inference evaluate_model results")
-    print(results)
     return results
 
 
@@ -131,22 +106,21 @@ def main():
 
     TODO: Must return Dictionary - logits, loss, accuracy, f1, precision, recall
     """
-    print("Infernce : main")
     args = parse_arguments()
+
     print(f"Loading test data for {args.dataset}...")
     _, X_test, _, y_test = load_and_preprocess_data(args.dataset)
 
-    print("Infernce : main after loading")
-    
-   # Instantiating the model directly with parsed args
+
+   #Instantiating the model directly with parsed args
     print("Initializing model...")
     model = NeuralNetwork(args)
     
-    # Loading weights
+    #Loading weights
     print(f"Loading weights from {args.model_save_path}...")
     weights_dict = load_model(args.model_save_path)
     
-    # Putting weights into network using OOP method
+    #Putting weights into network using OOP method
     model.set_weights(weights_dict)
     
     print("Evaluating model...")

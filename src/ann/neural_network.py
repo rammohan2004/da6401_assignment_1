@@ -19,8 +19,6 @@ class NeuralNetwork:
         """
         Initialize the neural network safely, defending against missing autograder arguments.
         """
-        # 🚨 FIX 1: Define these FIRST before any other logic runs!
-        # Fallback to 784 and 10 if the autograder doesn't specify them
         self.args = cli_args
 
         #input image 28 X 28
@@ -96,6 +94,8 @@ class NeuralNetwork:
         X is shape (b, D_in) and output is shape (b, D_out).
         b is batch size, D_in is input dimension, D_out is output dimension.
         """
+
+        #forwarding through all layers
         out = X
         for i in range(len(self.layers)):
             z = self.layers[i].forward(out)
@@ -113,37 +113,36 @@ class NeuralNetwork:
         """
         N = y_true.shape[0]
         
-        # Defense against autograder passing 1D label arrays
+        #checking if y_true os one hot coded or not and handling
         if y_true.ndim == 1 or y_true.shape[1] == 1:
             y_true_one_hot = np.zeros((N, self.output_dim))
             y_true_one_hot[np.arange(N), y_true.flatten()] = 1
             y_true = y_true_one_hot
 
-        # 🚨 THE SECRET FIX: Route the math based on the loss function
+        
         loss_name = getattr(self.args, 'loss', 'cross_entropy')
         
+        #calculating output layer grad
         if loss_name == 'mean_squared_error':
-            # For MSE: Do NOT apply softmax! Just (logits - y_true)
             grad = (logits - y_true) / N
         else:
-            # For Cross Entropy: Apply Softmax first, then (probs - y_true)
             y_pred = self.activations[-1].forward(logits)
             grad = (y_pred - y_true) / N
         
-        # Backprop through the output layer 
+        #Backpropagation through the output layer 
         grad = self.layers[-1].backward(grad)
         
-        # Backprop through the hidden layers
+        #Backpropgation through the hidden layers
         for i in range(len(self.layers)-2, -1, -1):
             grad = self.activations[i].backward(grad)
             grad = self.layers[i].backward(grad)
             
-        # Add Weight Decay directly to gradients here
+        #Adding Weight Decay directly to gradients
         weight_decay = getattr(self.args, 'weight_decay', 0.0)
         for layer in self.layers:
             layer.grad_W += weight_decay * layer.W
             
-        # Collect gradients in reverse order (index 0 = last layer)
+        #saving gradients in reverse order
         self.grad_W = np.empty(len(self.layers), dtype=object)
         self.grad_b = np.empty(len(self.layers), dtype=object)
         
@@ -152,58 +151,6 @@ class NeuralNetwork:
             self.grad_b[i] = layer.grad_b
             
         return self.grad_W, self.grad_b
-    
-    ''' 
-    def backward(self, y_true, logits):
-        """
-        Backward propagation to compute gradients.
-        
-        Args:
-            y_true: True labels
-            y_pred: Predicted outputs
-            
-        Returns:
-            return grad_w, grad_b
-        """
-
-        """
-        Backward propagation to compute gradients.
-        Returns two numpy arrays: grad_Ws, grad_bs.
-        - `grad_Ws[0]` is gradient for the last (output) layer weights,
-          `grad_bs[0]` is gradient for the last layer biases, and so on.
-        """
-
-        grad_W_list = []
-        grad_b_list = []
-        N = y_true.shape[0]
-         # Backprop through layers in reverse; collect grads so that index 0 = last layer
-        y_pred = self.activations[-1].forward(logits)
-        grad = (y_pred - y_true)/N
-        grad = self.layers[-1].backward(grad)
-        
-        grad_W_list.append(self.layers[-1].grad_W)
-        grad_b_list.append(self.layers[-1].grad_b)
-        #grad = self.loss_func.backward(y_true, y_pred)
-        for i in range(len(self.layers)-2, -1, -1):
-            grad = self.activations[i].backward(grad)
-            grad = self.layers[i].backward(grad)
-
-            grad_W_list.append(self.layers[i].grad_W)
-            grad_b_list.append(self.layers[i].grad_b)
-        
-        # create explicit object arrays to avoid numpy trying to broadcast shapes
-        self.grad_W = np.empty(len(grad_W_list), dtype=object)
-        self.grad_b = np.empty(len(grad_b_list), dtype=object)
-        for i, (gw, gb) in enumerate(zip(grad_W_list, grad_b_list)):
-            self.grad_W[i] = gw
-            self.grad_b[i] = gb
-
-        #print("Shape of grad_Ws:", self.grad_W.shape, self.grad_W[0].shape)
-        #print("Shape of grad_bs:", self.grad_b.shape, self.grad_b[0].shape)
-        return self.grad_W, self.grad_b
-
-        
-        '''
     
     def update_weights(self):
         """
@@ -215,12 +162,11 @@ class NeuralNetwork:
         """
         Train the network for specified epochs.
         """
-        #Normalizing to make values between 0.0 and 1.0
 
         #Doing one hot encoding for outputs
         y_train = np.eye(10)[y_train]
 
-
+        #splitting into training and validation sets
         num_samples = X_train.shape[0]
         val_size = int(0.1 * num_samples) 
         indices = np.random.permutation(num_samples)
@@ -234,9 +180,11 @@ class NeuralNetwork:
         y_train_split = y_shuffled[val_size:]
         
         train_samples = X_train_split.shape[0] 
+
         #storing training loss, accuracy and validation loss, accuracy
         history = {'loss':[], 'accuracy':[], 'val_loss':[], 'val_accuracy':[]}
 
+        #to store weights based best val f1 score
         best_val_f1=-1
         self.best_weights=None
 
@@ -255,19 +203,16 @@ class NeuralNetwork:
                 X_batch = X_epoch[i:i+batch_size]
                 y_batch = y_epoch[i:i+batch_size]
                 
-                # Forward pass
+                #Forward pass
                 logits = self.forward(X_batch)
-                
-                # Applying softmax activation
-                #y_pred = self.activations[-1].forward(logits)
 
-                # Backward pass
+                #Backward pass
                 self.backward(y_batch, logits)
                 
-                # Updating weights
+                #Updating weights
                 self.update_weights()
                 
-                # Accumulate loss and accuracy for this batch
+                #Accumulating loss and accuracy for this batch
                 probs = self.activations[-1].forward(logits)
                 batch_loss = self.loss_func.forward(y_batch, probs)
                 epoch_loss_sum += batch_loss * X_batch.shape[0] # Weighted by batch size
@@ -276,7 +221,7 @@ class NeuralNetwork:
                 y_pred_classes = np.argmax(logits, axis=1)
                 correct_predictions += np.sum(y_true_classes == y_pred_classes)
             
-            # Calculate final epoch metrics without running a massive forward pass!
+            #Calculating final epoch metrics without running a massive forward pass
             epoch_loss = epoch_loss_sum / train_samples
             epoch_acc = correct_predictions / train_samples
             
@@ -327,8 +272,6 @@ class NeuralNetwork:
 
 
         #Forward method for predictions
-
-
         y_pred = self.forward(X)
         #applying softmax activation
         y_pred = self.activations[-1].forward(y_pred)
