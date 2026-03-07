@@ -1,174 +1,64 @@
 ## GitHub Repository
-
 You can find the complete project on [GitHub](https://github.com/rajkumarseelam/DA6401-Introduction-to-Deep-Learning.git).
 
 ## Wandb Report Link
-
 You can find the Report on [WandB Report](https://wandb.ai/cs24m042-iit-madras-foundation/DA6401-Assignment-1/reports/DA6401-Assignment-1--VmlldzoxMTgyMDMzNQ).
 
 # Feedforward Neural Network with Various Optimizers
 
 ## Overview
-
-This project implements a feedforward neural network from scratch using NumPy. The network supports multiple hidden layers, various weight initialization techniques, activation functions, and loss functions. It also integrates multiple optimization techniques for training. The model can be trained on the MNIST and Fashion-MNIST datasets.
+[cite_start]This project implements a configurable, modular Multi-Layer Perceptron (MLP) using only NumPy[cite: 24]. [cite_start]The project explores fundamental Deep Learning concepts, including forward propagation, backpropagation, and various optimization strategies to classify the MNIST and Fashion-MNIST datasets[cite: 25].
 
 ## Features
+- [cite_start]Implements a customizable Feedforward Neural Network relying exclusively on NumPy for mathematical operations[cite: 26].
+- [cite_start]Supports activation functions: sigmoid, tanh, relu[cite: 49].
+- [cite_start]Supports loss functions: mean_squared_error, cross_entropy[cite: 44].
+- Includes multiple optimizers:
+  - [cite_start]Stochastic Gradient Descent (sgd) [cite: 43]
+  - [cite_start]Momentum-based SGD (momentum) [cite: 43]
+  - [cite_start]Nesterov Accelerated Gradient (nag) [cite: 43]
+  - [cite_start]RMSprop (rmsprop) [cite: 43]
+- [cite_start]Uses Weights & Biases (wandb) for experiment tracking[cite: 28].
+- [cite_start]Evaluates models using Accuracy, Precision, Recall, and F1-score[cite: 55].
 
-* Implements a customizable Feedforward Neural Network using only NumPy.
-
-
-* Supports activation functions: Sigmoid, Tanh, ReLU.
-
-
-* Supports loss functions: Mean Squared Error, Cross Entropy.
-
-
-* Includes multiple optimizers:
-* Stochastic Gradient Descent (SGD) 
-
-
-* Momentum-based SGD 
-
-
-* Nesterov Accelerated Gradient (NAG) 
-
-
-* RMSprop 
-
-
-
-
-* Uses Weights & Biases (WandB) for experiment tracking.
-
-
-* Generates confusion matrix plots using scikit-learn.
-
-
-
-## Code Organization
-
-The project follows the required GitHub skeleton. The main execution scripts are `train.py` and `inference.py`, which use `argparse` for configuration.
-
-Creating a model object and initializing the network is handled via the parsed arguments:
-
-```python
-from src.ann.neural_network import NeuralNetwork
-model = NeuralNetwork(args)
-
-```
-
-The training process can be executed directly by passing the data:
-
-```python
-history = model.train(X_train, y_train, epochs=args.epochs, batch_size=args.batch_size)
-
-```
-
-For generating the confusion matrix for the test data:
-
-```python
-import wandb
-wandb.plot.confusion_matrix(preds=y_pred, y_true=y_test, class_names=class_names)
-
-```
-
-Training metrics such as `train_accuracy`, `train_loss`, `val_accuracy`, and `val_loss` are tracked and logged directly to Weights and Biases during the training loop.
+## Repository Hierarchy
+    DA6401-Introduction-to-Deep-Learning/
+    |-- src/
+    |   |-- best_config.json
+    |   |-- best_model.npy
+    |   |-- train.py
+    |   |-- inference.py
+    |   |-- ann/
+    |       |-- neural_network.py
+    |-- README.md
 
 ## Usage
-
 ### Running the Training Script
-
 Execute the training script with default parameters using the command line interface:
-
-```bash
-python train.py
-
-```
+    python src/train.py
 
 ### Command-line Arguments
-
-You can customize the training process using the following arguments:
-
-```bash
-python train.py --dataset fashion_mnist --epochs 20 --batch_size 32 --optimizer rmsprop --learning_rate 0.001 --activation relu
-
-```
+You can customize the training process using the following mandatory arguments:
+     python train.py -d mnist -e 15 -b 16 -l cross_entropy -o rmsprop -lr 0.0001 -wd 0.0 -nhl 3 -sz 128 64 32 -a tanh -w_i xavier
 
 ### Argument Details
-
-* 
-`--dataset`: Choose between `mnist` and `fashion_mnist`.
-
-
-* 
-`--epochs`: Number of training epochs.
-
-
-* 
-`--batch_size`: Mini-batch size for training.
-
-
-* 
-`--optimizer`: Select an optimizer from `sgd`, `momentum`, `nag`, `rmsprop`.
-
-
-* 
-`--learning_rate` or `-lr`: Initial learning rate.
-
-
-* 
-`--activation` or `-a`: Choose activation function from `sigmoid`, `tanh`, `relu`.
-
-
-* 
-`--loss`: Choose loss function from `mean_squared_error` or `cross_entropy`.
-
-
-* 
-`--num_layers` or `-nhl`: Number of hidden layers.
-
-
-* 
-`--hidden_size` or `-sz`: Number of neurons per hidden layer.
-
-
-* 
-`--weight_init` or `-wi`: Weight initialization method choice of `random` or `xavier`.
-
-
-* 
-`--weight_decay` or `-wd`: Weight decay for L2 regularization.
-
-
-* 
-`--wandb_project` or `-w_p`: Weights and Biases Project ID.
-
-
+- -d, --dataset: Choose between mnist and fashion_mnist.
+- -e, --epochs: Number of training epochs.
+- -b, --batch_size: Mini-batch size.
+- -o, --optimizer: Select an optimizer from sgd, momentum, nag, rmsprop.
+- -lr, --learning_rate: Initial learning rate.
+- -a, --activation: Choice of sigmoid, tanh, relu for every hidden layer.
+- -l, --loss: Choice of mean_squared_error or cross_entropy.
+- -nhl, --num_layers: Number of hidden layers.
+- -sz, --hidden_size: Number of neurons in each hidden layer (list of values).
+- -wi, --weight_init: Choice of random or xavier.
+- -wd, --weight_decay: Weight decay for L2 regularization.
+- -w_p, --wandb_project: Weights and Biases Project ID.
 
 ## Output
-
-* Training and validation accuracy/loss logged for each epoch.
-* Confusion matrix plotted for the test set evaluations. - The best model weights saved as `best_model.npy` based on the test F-1 score.
-
-
-* The optimal configuration saved as `best_config.json`.
+- 
+- The best model weights saved as best_model.npy based on test F-1 score
+- The optimal configuration saved as best_config.json representing your optimized weights and the model configuration
+- Both the model and config files are placed in the src folder
 
 
-
-## Example
-
-To train a model with ReLU activation and RMSprop optimizer:
-
-```bash
-python train.py --dataset mnist --epochs 15 --batch_size 32 --optimizer rmsprop --activation relu
-
-```
-
-## Results Tracking with WandB
-
-Ensure you are logged into WandB before running the script to track your hyperparameter sweeps and metrics:
-
-```bash
-wandb login
-
-```
