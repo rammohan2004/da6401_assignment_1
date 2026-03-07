@@ -212,6 +212,26 @@ class NeuralNetwork:
                 #Updating weights
                 self.update_weights()
                 
+                #wandb log
+                ''' 
+                if wandb.run is not None and wandb.run.group == "symmetry_test":
+                    if not hasattr(self, 'iter_count'):
+                        self.iter_count = 0
+                    if self.iter_count < 50:
+        
+                        flat_grads = self.layers[0].grad_b.flatten()
+                        
+                        wandb.log({
+                            'iteration': self.iter_count,
+                            'neuron_1_grad': flat_grads[0],
+                            'neuron_2_grad': flat_grads[1],
+                            'neuron_3_grad': flat_grads[2],
+                            'neuron_4_grad': flat_grads[3],
+                            'neuron_5_grad': flat_grads[4]
+                        })
+                        self.iter_count += 1
+                        '''
+                
                 #Accumulating loss and accuracy for this batch
                 probs = self.activations[-1].forward(logits)
                 batch_loss = self.loss_func.forward(y_batch, probs)
