@@ -42,7 +42,7 @@ def parse_arguments():
     parser.add_argument('-sz', '--hidden_size', type=int, nargs='+', default=[128, 64, 16])
     parser.add_argument('-a', '--activation', type=str, default='tanh', choices=['sigmoid', 'tanh', 'relu'])
     parser.add_argument('-w_i', '--weight_init', type=str, default='xavier', choices=['random', 'xavier'])
-    parser.add_argument('-w_p','--wandb_project', type=str, default="da6401_assignment1")
+    parser.add_argument('-w_p','--wandb_project', type=str, default=None)
     parser.add_argument('--model_save_path', type=str, default='best_model.npy')
     
     args = parser.parse_args()
@@ -59,7 +59,6 @@ def main():
     """
     Main training function.
     """
-    print('Train : arg parse')
     args = parse_arguments()
     
     # Initializing wandb

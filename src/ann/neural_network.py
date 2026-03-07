@@ -266,7 +266,6 @@ class NeuralNetwork:
             history['val_accuracy'].append(val_acc)
             
             #wandb log
-            # wandb log
             if wandb.run is not None:
                 log_dict = {
                     'epoch': epoch + 1,
@@ -310,6 +309,7 @@ class NeuralNetwork:
         
         #calculating accuaracy
         accuracy = np.mean(y_true_classes==y_pred_classes)
+        #calculating f1 score
         f1 = f1_score(y_true_classes, y_pred_classes, average='macro', zero_division=0)
         
         return loss, accuracy, f1
