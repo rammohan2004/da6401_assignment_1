@@ -1,10 +1,10 @@
 {
     "dataset": "mnist",
-    "epochs": 10,
-    "batch_size": 128,
+    "epochs": 15,
+    "batch_size": 16,
     "loss": "cross_entropy",
     "optimizer": "rmsprop",
-    "learning_rate": 0.001,
+    "learning_rate": 0.000259982357115046,
     "weight_decay": 0.0,
     "num_layers": 3,
     "hidden_size": [
@@ -12,7 +12,7 @@
         64,
         32
     ],
-    "activation": "relu",
+    "activation": "tanh",
     "weight_init": "xavier",
     "wandb_project": null,
     "model_save_path": "best_model.npy"

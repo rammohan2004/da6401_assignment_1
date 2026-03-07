@@ -246,15 +246,21 @@ class NeuralNetwork:
             history['val_accuracy'].append(val_acc)
             
             #wandb log
+            # wandb log
             if wandb.run is not None:
-                wandb.log({
+                log_dict = {
                     'epoch': epoch + 1,
                     'train_loss': epoch_loss,
                     'train_accuracy': epoch_acc,
                     'val_loss': val_loss,
                     'val_accuracy': val_acc,
-                    'val_logits': wandb.Histogram(val_logits) 
-                })
+                    'first_layer_grad_norm': np.linalg.norm(self.layers[0].grad_W)
+                }
+                
+                if len(self.activations) > 1:
+                    log_dict['hidden_layer_1_activations'] = wandb.Histogram(self.activations[0].a)
+                    
+                wandb.log(log_dict)
             
             
             print(f"Epoch {epoch+1}/{epochs} | Train Loss: {epoch_loss:.4f}, Acc: {epoch_acc:.4f} | Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
