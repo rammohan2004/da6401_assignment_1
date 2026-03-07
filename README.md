@@ -1,36 +1,41 @@
 ## GitHub Repository
-You can find the complete project on [GitHub](https://github.com/rajkumarseelam/DA6401-Introduction-to-Deep-Learning.git).
+You can find the complete project on [GitHub](https://github.com/rammohan2004/da6401_assignment_1).
 
 ## Wandb Report Link
-You can find the Report on [WandB Report](https://wandb.ai/cs24m042-iit-madras-foundation/DA6401-Assignment-1/reports/DA6401-Assignment-1--VmlldzoxMTgyMDMzNQ).
+You can find the Report on [WandB Report](https://wandb.ai/cs25m017-indian-institute-of-technology-madras/da6401-assignment1/reports/DA6401-Assignment-CS25M017--VmlldzoxNjEyNDA1OQ?accessToken=8n6803hd0pvpllguqe0tjlc4e7lmqe0yq0ffswigxuf4g9n0vginjocmu3tdr0n8).
 
 # Feedforward Neural Network with Various Optimizers
 
 ## Overview
-[cite_start]This project implements a configurable, modular Multi-Layer Perceptron (MLP) using only NumPy[cite: 24]. [cite_start]The project explores fundamental Deep Learning concepts, including forward propagation, backpropagation, and various optimization strategies to classify the MNIST and Fashion-MNIST datasets[cite: 25].
+This project implements a configurable, modular Multi-Layer Perceptron (MLP) using only NumPy. The project explores fundamental Deep Learning concepts, including forward propagation, backpropagation, and various optimization strategies to classify the MNIST and Fashion-MNIST datasets.
 
 ## Features
-- [cite_start]Implements a customizable Feedforward Neural Network relying exclusively on NumPy for mathematical operations[cite: 26].
-- [cite_start]Supports activation functions: sigmoid, tanh, relu[cite: 49].
-- [cite_start]Supports loss functions: mean_squared_error, cross_entropy[cite: 44].
+- Implements a customizable Feedforward Neural Network relying exclusively on NumPy for mathematical operations.
+- Supports activation functions: sigmoid, tanh, relu.
+- Supports loss functions: mean_squared_error, cross_entropy.
 - Includes multiple optimizers:
-  - [cite_start]Stochastic Gradient Descent (sgd) [cite: 43]
-  - [cite_start]Momentum-based SGD (momentum) [cite: 43]
-  - [cite_start]Nesterov Accelerated Gradient (nag) [cite: 43]
-  - [cite_start]RMSprop (rmsprop) [cite: 43]
-- [cite_start]Uses Weights & Biases (wandb) for experiment tracking[cite: 28].
-- [cite_start]Evaluates models using Accuracy, Precision, Recall, and F1-score[cite: 55].
+  - Stochastic Gradient Descent (sgd) 
+  - Momentum-based SGD (momentum) 
+  - Nesterov Accelerated Gradient (nag)
+  - RMSprop (rmsprop)
+- Uses Weights & Biases (wandb) for experiment tracking.
+- Evaluates models using Accuracy, Precision, Recall, and F1-score.
 
 ## Repository Hierarchy
-    DA6401-Introduction-to-Deep-Learning/
+    da6401_assignment_1/
     |-- src/
     |   |-- best_config.json
     |   |-- best_model.npy
     |   |-- train.py
     |   |-- inference.py
     |   |-- ann/
+    |       |-- activations.py
+    |       |-- neural_layer.py
     |       |-- neural_network.py
+    |       |-- objective_function.py
+    |       |-- optimizrs.py
     |-- README.md
+    |requirements.txt
 
 ## Usage
 ### Running the Training Script
