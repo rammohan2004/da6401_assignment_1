@@ -35,7 +35,7 @@ This project implements a configurable, modular Multi-Layer Perceptron (MLP) usi
     |       |-- objective_function.py
     |       |-- optimizrs.py
     |-- README.md
-    |requirements.txt
+    |-- requirements.txt
 
 ## Usage
 ### Running the Training Script
@@ -44,7 +44,7 @@ Execute the training script with default parameters using the command line inter
 
 ### Command-line Arguments
 You can customize the training process using the following mandatory arguments:
-     python train.py -d mnist -e 15 -b 16 -l cross_entropy -o rmsprop -lr 0.0001 -wd 0.0 -nhl 3 -sz 128 64 32 -a tanh -w_i xavier
+     python src/train.py -d mnist -e 15 -b 16 -l cross_entropy -o rmsprop -lr 0.0001 -wd 0.0 -nhl 3 -sz 128 64 32 -a tanh -w_i xavier
 
 ### Argument Details
 - -d, --dataset: Choose between mnist and fashion_mnist.
@@ -61,7 +61,6 @@ You can customize the training process using the following mandatory arguments:
 - -w_p, --wandb_project: Weights and Biases Project ID.
 
 ## Output
-- 
 - The best model weights saved as best_model.npy based on test F-1 score
 - The optimal configuration saved as best_config.json representing your optimized weights and the model configuration
 - Both the model and config files are placed in the src folder
